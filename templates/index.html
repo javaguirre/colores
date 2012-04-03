@@ -10,6 +10,21 @@
             <input type="file" name="image" />
             <input type="submit" />
        </form>
-       {{ result }}
+       <table>
+           <tr>
+               <th>Número de ocurrencias</th>
+               <th>Rojo</th>
+               <th>Verde</th>
+               <th>Azul</th>
+           </tr>
+       {% for colour in colours %}
+           <tr>
+               <td>{{colour[0]}}</td>
+               <td>{{colour[1][0]}}</td>
+               <td>{{colour[1][1]}}</td>
+               <td>{{colour[1][2]}}</td>
+           </tr>
+       {% endfor %}
+       </table>
     </body>
 </html>
