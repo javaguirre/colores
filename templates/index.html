@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Images</title>
+        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='bootstrap.min.css') }}">
+        <script type=text/javascript src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+    </head>
+    <body>
+        <form method="post" action="" enctype="multipart/form-data">
+            <input type="file" name="image" />
+            <input type="submit" />
+       </form>
+       {{ result }}
+    </body>
+</html>
