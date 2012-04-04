@@ -3,28 +3,42 @@
     <head>
         <title>Images</title>
         <link rel=stylesheet type=text/css href="{{ url_for('static', filename='bootstrap.min.css') }}">
-        <script type=text/javascript src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+        <script type=text/javascript src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='jquery.tablesorter.min.js') }}"></script>
+        <script>
+            $(function()
+            {
+                $("#colours_table").tablesorter();
+            });
+        </script>
     </head>
     <body>
         <form method="post" action="" enctype="multipart/form-data">
             <input type="file" name="image" />
             <input type="submit" />
-       </form>
-       <table>
-           <tr>
-               <th>Número de ocurrencias</th>
-               <th>Rojo</th>
-               <th>Verde</th>
-               <th>Azul</th>
-           </tr>
-       {% for colour in colours %}
-           <tr>
-               <td>{{colour[0]}}</td>
-               <td>{{colour[1][0]}}</td>
-               <td>{{colour[1][1]}}</td>
-               <td>{{colour[1][2]}}</td>
-           </tr>
-       {% endfor %}
+        </form>
+        {% if colours %}
+            <a href="{{ url_for('export') }}">Exportar a CSV</a>
+        {% endif %}
+       <table id="colours_table">
+           <thead>
+               <tr>
+                   <th>Número de ocurrencias</th>
+                   <th>Rojo</th>
+                   <th>Verde</th>
+                   <th>Azul</th>
+               </tr>
+           </thead>
+           <tbody>
+               {% for colour in colours %}
+                   <tr>
+                       <td>{{colour[0]}}</td>
+                       <td>{{colour[1][0]}}</td>
+                       <td>{{colour[1][1]}}</td>
+                       <td>{{colour[1][2]}}</td>
+                   </tr>
+               {% endfor %}
+           </tbody>
        </table>
     </body>
 </html>
