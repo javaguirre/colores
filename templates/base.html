@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Images</title>
+        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='bootstrap.min.css') }}">
+        <script type=text/javascript src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='jquery.tablesorter.min.js') }}"></script>
+        <script>
+            $(function()
+            {
+                $("#colours_table").tablesorter();
+            });
+        </script>
+    </head>
+    <body>
+        {% block content %}
+        {% endblock %}
+    </body>
+</html>

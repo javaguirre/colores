@@ -1,25 +1,50 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, render_template, request, send_from_directory
+from flask import Flask, render_template, request, send_from_directory, redirect, flash, url_for
+from flaskext.login import (LoginManager, login_required,
+                            login_user, logout_user, UserMixin, AnonymousUser,
+                            confirm_login, fresh_login_required)
 import Image
 import csv
 
-FILE_PATH = '/tmp/image'
-UPLOAD_FOLDER = 'uploads'
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+DEBUG = True
+
 app = Flask(__name__)
+
+UPLOAD_FOLDER = 'uploads'
+SECRET_KEY = ""
+
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config.from_object(__name__)
+
+class User(UserMixin):
+    def __init__(self, name, id, active=True):
+        self.name = name
+        self.id = id
+        self.active = active
 
 
-#TODO descargar como CSV
-#Ponerlo bonito en la web
-#Meterle el login
-#Meterle el plugin de tablesorter
-#TODO Controlar el tamaño de los archivos
+FILE_PATH = '/tmp/image'
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+
+
+USERS = {
+    1: User(u"", 1),
+    2: User(u"", 2),
+}
+
+USER_NAMES = dict((u.name, u) for u in USERS.itervalues())
+
+login_manager = LoginManager()
+login_manager.setup_app(app)
+
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
+
 @app.route("/", methods=['GET', 'POST'])
+@login_required
 def index():
     colours = ''
     if request.method == 'POST':
@@ -34,6 +59,7 @@ def index():
 
 
 @app.route("/export")
+@login_required
 def export():
     im = Image.open('/tmp/image')
     colours = im.getcolors(im.size[0]*im.size[1])
@@ -45,6 +71,33 @@ def export():
     f.close()
 
     return send_from_directory(app.config['UPLOAD_FOLDER'], 'result.csv')
+
+
+@login_manager.user_loader
+def load_user(id):
+    return USERS.get(int(id))
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST" and "username" in request.form:
+        username = request.form["username"]
+        if username in USER_NAMES:
+            remember = request.form.get("remember", "no") == "yes"
+            if login_user(USER_NAMES[username], remember=remember):
+                flash("Logged in!")
+                return redirect(request.args.get("next") or url_for("index"))
+            else:
+                flash("Sorry, but you could not log in.")
+        else:
+            flash(u"Invalid username.")
+    return render_template("login.html")
+
+
+@app.route("/logout")
+def logout():
+    logout_user()
+    return redirect(url_for("login"))
 
 
 if __name__ == "__main__":
