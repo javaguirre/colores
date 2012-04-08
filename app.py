@@ -58,7 +58,7 @@ def index():
     return render_template('index.html', colours=colours)
 
 
-@app.route("/export")
+@app.route("/export.csv")
 @login_required
 def export():
     im = Image.open('/tmp/image')
