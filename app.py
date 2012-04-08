@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, render_template, request, send_from_directory, redirect, flash, url_for
 from flaskext.login import (LoginManager, login_required,
-                            login_user, logout_user, UserMixin, AnonymousUser,
-                            confirm_login, fresh_login_required)
+                            login_user, logout_user, UserMixin)
 import Image
 import csv
+import os
 
 DEBUG = True
 
 app = Flask(__name__)
 
 UPLOAD_FOLDER = 'uploads'
-SECRET_KEY = ""
+SECRET_KEY = "dniaovcdavpadp"
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config.from_object(__name__)
@@ -28,8 +28,8 @@ ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 
 USERS = {
-    1: User(u"", 1),
-    2: User(u"", 2),
+    1: User(u"Vidal!", 1),
+    2: User(u"Javaguirre!", 2),
 }
 
 USER_NAMES = dict((u.name, u) for u in USERS.itervalues())
@@ -101,5 +101,6 @@ def logout():
 
 
 if __name__ == "__main__":
-    app.debug = True
-    app.run()
+    app.debug = DEBUG
+    port = int(os.environ.get('PORT', 45412))
+    app.run(host='0.0.0.0', port=port)
